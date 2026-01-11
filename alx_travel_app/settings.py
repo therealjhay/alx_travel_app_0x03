@@ -129,10 +129,17 @@ REST_FRAMEWORK = {
     # Custom REST settings go here, if needed
 }
 
-# Celery Configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# Celery Configuration Options
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'  # Default RabbitMQ URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+
+# Email Configuration (Use Console for testing, or SMTP for production)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# OR for real emails:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-app-password'

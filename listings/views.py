@@ -102,3 +102,19 @@ class VerifyPaymentView(APIView):
 
         except requests.exceptions.RequestException as e:
             return Response({"error": str(e)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+    def perform_create(self, serializer):
+        # Save the booking first
+        booking = serializer.save()
+        
+        # Trigger the asynchronous task
+        # We pass IDs or strings, not full model objects, to Celery tasks!
+        send_booking_confirmation_email.delay(
+            booking.id,
+            booking.user.email,  # Assuming your booking links to a User model
+            f"Booking for {booking.listing.title} on {booking.start_date}"
+        )
